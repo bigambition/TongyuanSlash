@@ -1032,6 +1032,74 @@ bool Room::isCanceled(const CardEffectStruct &effect) {
     setTag("NullifyingTimes", 0);
     return askForNullification(effect.card, effect.from, effect.to, true);
 }
+//
+//bool Room::askForHelpSign(const DamageStruct damage){
+//	QString card_name;
+//	if(damage.card)
+//		card_name = damage.card->objectName();
+//	else
+//		card_name = "no_card";
+//	QList<ServerPlayer*>players = getAllPlayers();
+//	ServerPlayer *from = damage.from;
+//	ServerPlayer *to = damage.to;
+//	foreach(ServerPlayer* player,players){
+//		if(!player->hasHelpSign())
+//			continue;
+//		trust:
+//		//while (isPaused()) {}
+//		AI* ai = player->getAI();
+//		const Card* card = NULL;
+//		if(ai){
+//			card = ai->askForHelpSign(damage);
+//			if(card)
+//				thread->delay(Config.AIDelay);
+//		}else{
+//			//QString trick_name = QString()
+//			/*QList<ServerPlayer *> validHumanPlayers;
+//			QList<ServerPlayer *> validAiPlayers;*/
+//
+//			Json::Value arg(Json::arrayValue);
+//			arg[0] = toJsonString(card_name);
+//			arg[1] = from ? toJsonString(from->objectName()) : Json::Value::null;
+//			arg[2] = to ? toJsonString(to->objectName()) : Json::Value::null;
+//			
+//			//getResult(player,false)
+//			time_t timeOut = ServerInfo.getCommandTimeout(S_COMMAND_ASKFORHELPSIGN, S_SERVER_INSTANCE);
+//			if(!getResult(player,timeOut))
+//				goto trust;
+//			else
+//				card = Card::Parse(card_name);
+//
+//			if (card == NULL) {
+//				continue;
+//				}
+//			bool continuable = false;
+//			card = card->validateInResponse(player);
+//			if(card){
+//				CardUseStruct use;
+//				use.card = card;
+//				use.from = player;
+//				useCard(use);
+//				LogMessage log;
+//				log.type = "#HelpSign";
+//				log.from = from;
+//				log.to<<to;
+//				log.arg = card_name;
+//				sendLog(log);
+//				thread->delay(500);
+//
+//				QVariant decisionData = QVariant::fromValue(use);
+//				thread->trigger(ChoiceMade, this, player, decisionData);
+//				//setTag("NullifyingTimes", getTag("NullifyingTimes").toInt() + 1);
+//				return !askForNullification(new HelpSignFake(Card::NoSuit,0),player,to,true);
+//			}else if(continuable)
+//				goto trust;
+//		}
+//		
+//	}
+//	return false;
+//			
+//}
 
 bool Room::verifyNullificationResponse(ServerPlayer *player, const Json::Value &response, void *) {
     const Card *card = NULL;

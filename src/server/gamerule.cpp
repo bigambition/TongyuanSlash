@@ -359,6 +359,9 @@ bool GameRule::trigger(TriggerEvent triggerEvent, Room *room, ServerPlayer *play
         }
     case DamageDone: {
             DamageStruct damage = data.value<DamageStruct>();
+			/*if(room->askForHelpSign(damage))
+				damage.damage = 0;*/
+
             if (damage.from && !damage.from->isAlive())
                 damage.from = NULL;
             data = QVariant::fromValue(damage);

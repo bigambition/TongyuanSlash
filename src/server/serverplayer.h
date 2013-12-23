@@ -56,6 +56,8 @@ public:
     void play(QList<Player::Phase> set_phases = QList<Player::Phase>());
     bool changePhase(Player::Phase from, Player::Phase to);
 
+	//bool hasHelpSign() const;
+
     QList<Player::Phase> &getPhases();
     void skip(Player::Phase phase, bool sendLog = true);
     void skip(bool sendLog = true);
@@ -150,7 +152,7 @@ public:
     static bool CompareByActionOrder(ServerPlayer *a, ServerPlayer *b);
 
     // @@Compatibility
-    inline void removePileByName(QString pile_name) { clearOnePrivatePile(pile_name); }
+    inline void removePileByName(QString pile_name) { clearOnePrivatePile(pile_name); }	
 
 protected:
     //Synchronization helpers

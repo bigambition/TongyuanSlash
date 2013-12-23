@@ -1261,3 +1261,10 @@ bool ServerPlayer::CompareByActionOrder(ServerPlayer *a, ServerPlayer *b) {
     return room->getFront(a, b) == a;
 }
 
+//bool ServerPlayer::hasHelpSign() const{
+//	foreach(const Card* card,handcards){
+//		if(card->objectName() == "helpsign")
+//			return true;
+//	}
+//	return false;
+//}

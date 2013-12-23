@@ -100,6 +100,8 @@ Client::Client(QObject *parent, const QString &filename)
     m_interactions[S_COMMAND_INVOKE_SKILL] = &Client::askForSkillInvoke;
     m_interactions[S_COMMAND_MULTIPLE_CHOICE] = &Client::askForChoice;
     m_interactions[S_COMMAND_NULLIFICATION] = &Client::askForNullification;
+	//m_interactions[S_COMMAND_ASKFORHELPSIGN] = &Client::askForHelpSign;
+
     m_interactions[S_COMMAND_SHOW_CARD] = &Client::askForCardShow;
     m_interactions[S_COMMAND_AMAZING_GRACE] = &Client::askForAG;
     m_interactions[S_COMMAND_PINDIAN] = &Client::askForPindian;
@@ -920,6 +922,45 @@ void Client::askForNullification(const Json::Value &arg) {
 
     setStatus(RespondingUse);
 }
+//void Client::askForHelpSign(const Json::Value &arg){
+//	if (!arg.isArray() || arg.size() != 3 || !arg[0].isString()
+//		|| !(arg[1].isNull() || arg[1].isString())
+//		|| !arg[2].isString())
+//		return;
+//
+//	QString card_name = toQString(arg[0]);
+//	Json::Value source_name = arg[1];
+//	ClientPlayer *target_player = getPlayer(toQString(arg[2]));
+//
+//	if (!target_player || !target_player->getGeneral()) return;
+//
+//	ClientPlayer *source = NULL;
+//	if (source_name != Json::Value::null)
+//		source = getPlayer(source_name.asCString());
+//
+//	const Card *damage_card = Sanguosha->findChild<const Card *>(card_name);
+//	if(damage_card == NULL)
+//		damage_card = new NoCard(Card::NoSuit,0,true);
+//	
+//
+//	if (source == NULL) {
+//		prompt_doc->setHtml(tr("Do you want to use nullification to trick card %1 from %2?")
+//			.arg(Sanguosha->translate(damage_card->objectName()))
+//			.arg(getPlayerName(target_player->objectName())));
+//	} else {
+//		prompt_doc->setHtml(tr("%1 used trick card %2 to %3 <br>Do you want to use nullification?")
+//			.arg(getPlayerName(source->objectName()))
+//			.arg(Sanguosha->translate(card_name))
+//			.arg(getPlayerName(target_player->objectName())));
+//	}
+//
+//	_m_roomState.setCurrentCardUsePattern("helpsign");
+//	m_isDiscardActionRefusable = true;
+//
+//	setStatus(RespondingUse);
+//}
+
+
 
 void Client::onPlayerChooseCard(int card_id) {
     Json::Value reply = Json::Value::null;

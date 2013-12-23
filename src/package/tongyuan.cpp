@@ -889,7 +889,7 @@ public:
 					log1.type = "#biye1";
 					log1.from = zhaoyan;
 					log1.to<< damage.from;
-					room->sendLog(log);
+					room->sendLog(log1);
 					return true;
 			}
 							
@@ -1003,9 +1003,9 @@ public:
 			QStringList skill_names;			
 			QString skill_name;
 			foreach (const Skill *skill, player->getVisibleSkillList(false)) {
-				if (skill->isLordSkill()
+				if (/*skill->isLordSkill()
 					|| skill->getFrequency() == Skill::Limited
-					|| skill->getFrequency() == Skill::Wake ||
+					|| skill->getFrequency() == Skill::Wake ||*/
 					(skill->objectName()=="laobao" || skill->objectName() == "weidi") && zhaoyan->getRole() == "lord")
 					continue;
 				if (!skill_names.contains(skill->objectName())) {				
@@ -1077,7 +1077,7 @@ public:
 		JudgeStar judge = data.value<JudgeStar>();
 		CardStar card = judge->card;
 
-		if (card->isBlack()) {
+		if (card->isRed()) {
 			QList<ServerPlayer *> caopis;
 			foreach (ServerPlayer *p, room->getOtherPlayers(player)) {
 				if (p->hasLordSkill(objectName()))
@@ -1710,8 +1710,9 @@ public:
 
 	virtual bool trigger(TriggerEvent,Room* room,ServerPlayer* houwenjie,QVariant& data) const{
 		DamageStruct damage = data.value<DamageStruct>();
-		if(!damage.from || damage.from!=houwenjie || !houwenjie->askForSkillInvoke(objectName(),data)) return false;
+		if(!damage.from || damage.from!=houwenjie) return false;
 		if(!houwenjie->isWounded() && (damage.to->isNude() || !houwenjie->canDiscard(damage.to,"he"))) return false;
+		if(!houwenjie->askForSkillInvoke(objectName(),data)) return false;
 		QString choice;
 		if(!houwenjie->isWounded())
 			choice = "qipai";
@@ -1931,7 +1932,7 @@ public:
 			LogMessage log;
 			log.type = "#congwen";
 			log.from = player;
-			log.to<<(damage.to?damage.to:NULL);
+			log.to<<(damage.from?damage.from:NULL);
 			log.arg = QString::number(damage.damage);
 			room->sendLog(log);
 			return true;
@@ -4931,7 +4932,7 @@ public:
 class JiaxinClear: public TriggerSkill{
 public:
 	JiaxinClear(): TriggerSkill("#jiaxin_clear"){
-		events<<EventPhaseStart<<Death;
+		events<<EventPhaseChanging<<Death;
 		frequency = Compulsory;
 	}
 
@@ -4941,8 +4942,9 @@ public:
 
 	virtual bool trigger(TriggerEvent triggerEvent,Room* room,ServerPlayer* player,QVariant& data) const{
 		if(player->getMark("@jiaxin")==0) return false;
-		if(triggerEvent == EventPhaseStart){
-			if(player->getPhase() == Player::Finish)
+		if(triggerEvent == EventPhaseChanging){
+			PhaseChangeStruct change = data.value<PhaseChangeStruct>();
+			if(change.to == Player::NotActive)
 				player->loseMark("@jiaxin",player->getMark("@jiaxin"));
 		}else if(triggerEvent == Death){
 			DeathStruct death = data.value<DeathStruct>();
@@ -5234,11 +5236,17 @@ public:
 class Shenmi: public TriggerSkill{
 public:
 	Shenmi(): TriggerSkill("shenmi"){
-		events<<GameStart<<TurnStart;
+		events<<TurnStart;
 		frequency = Compulsory;
 	}
 
 	virtual bool trigger(TriggerEvent triggerEvent, Room *room, ServerPlayer *player, QVariant &data) const{
+		QStringList old_skills = room->getTag("old_skill").toString().split("+");
+		foreach(QString skill,old_skills){			
+			if(player->hasSkill(skill))
+				room->detachSkillFromPlayer(player,skill,false,true);							
+		}
+		room->removeTag("old_skill");
 		QSet<QString> ban;
 		foreach (ServerPlayer *player, room->getAlivePlayers()) {
 			QString name = player->getGeneralName();
@@ -5296,12 +5304,7 @@ public:
 		arg[3] = QSanProtocol::Utils::toJsonString(generalname);
 		room->doBroadcastNotify(QSanProtocol::S_COMMAND_LOG_EVENT, arg);*/
 
-		QStringList old_skills = room->getTag("old_skill").toString().split("+");
-		foreach(QString skill,old_skills){			
-			if(player->hasSkill(skill))
-				room->detachSkillFromPlayer(player,skill,false,true);							
-		}
-		room->removeTag("old_skill");
+		
 		QStringList new_skills;
 		foreach(const Skill* skill,general->getVisibleSkillList()){
 			if (skill->isLordSkill()|| skill->getFrequency() == Skill::Wake)
@@ -5561,7 +5564,7 @@ TongyuanPackage::TongyuanPackage()
 	zhangxiaolong->addSkill(new Jiushen);
 	zhangxiaolong->addSkill(new Biaoyan);
 
-	General *yaoyunzhi = new General(this,"yaoyunzhi","yan");//Ò¦ÔÆÖ¾
+	General *yaoyunzhi = new General(this,"yaoyunzhi","ping");//Ò¦ÔÆÖ¾
 	yaoyunzhi->addSkill(new Qianxu);
 
 	General *zhanghongchang = new General(this,"zhanghongchang$","yan",3);//ÕÅºé²ý
@@ -5571,7 +5574,7 @@ TongyuanPackage::TongyuanPackage()
 	zhanghongchang->addSkill(new XuanjiangDraw);
 	related_skills.insertMulti("xuanjiang","#xuanjiang");
 
-	General *wangxianglin = new General(this,"wangxianglin","yan",3,false);//ÍõÏæÁÜ
+	General *wangxianglin = new General(this,"wangxianglin","mo",3,false);//ÍõÏæÁÜ
 	wangxianglin->addSkill(new Aixiao);
 	wangxianglin->addSkill(new Chuyi);
 

@@ -360,5 +360,40 @@ public:
     virtual void onEffect(const CardEffectStruct &effect) const;
 };
 
+//class HelpSignFake: public TrickCard{
+//	Q_OBJECT
+//
+//public:
+//	HelpSignFake(Suit suit,int number): TrickCard(suit,number){
+//		setObjectName("helpsign");
+//	}
+//
+//	virtual QString getSubtype() const{
+//		return "single_target_trick";
+//	}
+//};
+//
+//class NoCard: public Card{
+//	Q_OBJECT
+//
+//public:
+//	NoCard(Suit suit,int number,bool target_fixed): Card(suit,number,target_fixed){
+//		setObjectName("no_card");
+//	}
+//
+//	virtual QString getType() const{
+//		return "no_card";
+//	}
+//
+//	virtual QString getSubtype() const{
+//		return "no_card";
+//	}
+//
+//	virtual CardType getTypeId() const{
+//		return Card::TypeBasic;
+//	}
+//
+//};
+
 #endif
 

@@ -274,6 +274,16 @@ const Card *TrustAI::askForNullification(const Card *, ServerPlayer *, ServerPla
     return NULL;
 }
 
+//const Card *TrustAI::askForHelpSign(const DamageStruct damage){
+//	if(self == damage.to){
+//		foreach(const Card* card,self->getHandcards()){
+//			if(card->objectName() == "helpsign")
+//				return card;
+//		}
+//	}
+//	return NULL;
+//}
+
 int TrustAI::askForCardChosen(ServerPlayer *, const QString &, const QString &, Card::HandlingMethod) {
     return -1;
 }

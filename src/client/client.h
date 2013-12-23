@@ -145,6 +145,8 @@ public:
     void askForSuit(const Json::Value &);
     void askForKingdom(const Json::Value &);
     void askForNullification(const Json::Value &);
+	//void askForHelpSign(const Json::Value &);
+
     void askForPindian(const Json::Value &);
     void askForCardChosen(const Json::Value &);
     void askForPlayerChosen(const Json::Value &);

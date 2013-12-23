@@ -319,6 +319,8 @@ public:
     const Card *askForExchange(ServerPlayer *player, const QString &reason, int discard_num, bool include_equip = false,
                                const QString &prompt = QString(), bool optional = false);
     bool askForNullification(const Card *trick, ServerPlayer *from, ServerPlayer *to, bool positive);
+	//
+	//bool askForHelpSign(const DamageStruct damage);
     bool isCanceled(const CardEffectStruct &effect);
     int askForCardChosen(ServerPlayer *player, ServerPlayer *who, const QString &flags, const QString &reason,
                          bool handcard_visible = false, Card::HandlingMethod method = Card::MethodNone, QList<int> &disabled_ids = QList<int>());
