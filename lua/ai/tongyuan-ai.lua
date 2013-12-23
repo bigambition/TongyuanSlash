@@ -2022,6 +2022,8 @@ fabu_skill.name = "fabu"
 table.insert(sgs.ai_skills, fabu_skill)
 fabu_skill.getTurnUseCard = function(self)
 	if self.player:getPile("bao"):isEmpty() then return end
+	if self:isWeak(self.player) then return end
+	if #self.enemies>#self.friends then return end
 	return sgs.Card_Parse("@FabuCard=.")
 end
 sgs.ai_skill_use_func.FabuCard = function(card,use,self)

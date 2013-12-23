@@ -2502,7 +2502,8 @@ public:
 	virtual bool trigger(TriggerEvent, Room *room, ServerPlayer *sunshangxiang, QVariant &data) const{
 		if(sunshangxiang->getPhase() != Player::NotActive) return false;
 		CardsMoveOneTimeStruct move = data.value<CardsMoveOneTimeStruct>();
-		if (move.from == sunshangxiang && move.from_places.contains(Player::PlaceHand)) {
+		if (move.from == sunshangxiang && move.from_places.contains(Player::PlaceHand) &&
+			move.to_place == Player::DiscardPile) {
 			for (int i = 0; i < move.card_ids.size(); i++) {
 				if (!sunshangxiang->isAlive())
 					return false;
@@ -5199,6 +5200,7 @@ void WendangCard::use(Room *room, ServerPlayer *source, QList<ServerPlayer *> &t
 	log.from = source;
 	log.arg = suit;
 	room->sendLog(log);
+	source->gainMark("@"+suit);
 	ServerPlayer* target = targets.first();
 	room->setTag("suit",QVariant::fromValue(suit));
 	if(!target->isKongcheng() && target->canDiscard(target,"h")){
@@ -5216,6 +5218,8 @@ void WendangCard::use(Room *room, ServerPlayer *source, QList<ServerPlayer *> &t
 		}		
 	}
 	room->removeTag("suit");
+	if (source->getMark("@"+suit)>0)
+		source->loseAllMarks("@"+suit);
 }
 
 class Wendang: public ZeroCardViewAsSkill{
