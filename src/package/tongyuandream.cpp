@@ -126,7 +126,7 @@ public:
 			if(card){
 				card->setCancelable(false);
 				room->useCard(CardUseStruct(card,p,damage.to));
-				room->broadcastInvoke("helpsign");
+				room->broadcastSkillInvoke("helpsign");
 				//if(room->askForNullification(card,p,damage.to,true)) return false;
 				//room->isCanceled()
 				LogMessage log;

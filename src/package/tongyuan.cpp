@@ -1747,13 +1747,16 @@ public:
 	}
 
 	virtual bool trigger(TriggerEvent,Room* room,ServerPlayer* fangxiaojian,QVariant& data) const{
-		if(!fangxiaojian->isAlive() || !fangxiaojian->askForSkillInvoke(objectName(),data)) return false;
-		fangxiaojian->drawCards(1);
 		DamageStruct damage = data.value<DamageStruct>();
-		if(damage.from && damage.from->isAlive() && !damage.from->isNude() && fangxiaojian->canDiscard(damage.from, "he")){
-			int card_id = room->askForCardChosen(fangxiaojian, damage.from, "he", objectName(), false, Card::MethodDiscard);
-			room->throwCard(Sanguosha->getCard(card_id), damage.from, fangxiaojian);
-		}
+		for(int i =0;i<damage.damage;i++){
+			if(!fangxiaojian->isAlive() || !fangxiaojian->askForSkillInvoke(objectName(),data)) return false;
+			fangxiaojian->drawCards(1);
+
+			if(damage.from && damage.from->isAlive() && !damage.from->isNude() && fangxiaojian->canDiscard(damage.from, "he")){
+				int card_id = room->askForCardChosen(fangxiaojian, damage.from, "he", objectName(), false, Card::MethodDiscard);
+				room->throwCard(Sanguosha->getCard(card_id), damage.from, fangxiaojian);
+			}
+		}		
 		return false;
 	}
 };
@@ -5464,6 +5467,10 @@ TongyuanPackage::TongyuanPackage()
 	mazhongfan->addSkill(new Wocao);
 	mazhongfan->addSkill(new Nima);
 
+	General *wangxianglin = new General(this,"wangxianglin","mo",3,false);//王湘淋
+	wangxianglin->addSkill(new Aixiao);
+	wangxianglin->addSkill(new Chuyi);
+
 	//-------------------行政、销售、前台等---------------------
 	General *taojiaqi = new General(this,"taojiaqi","qun",3,false);//陶佳琪
 	taojiaqi->addSkill(new Xuebeng);
@@ -5568,8 +5575,7 @@ TongyuanPackage::TongyuanPackage()
 	zhangxiaolong->addSkill(new Jiushen);
 	zhangxiaolong->addSkill(new Biaoyan);
 
-	General *yaoyunzhi = new General(this,"yaoyunzhi","ping");//姚云志
-	yaoyunzhi->addSkill(new Qianxu);
+	
 
 	General *zhanghongchang = new General(this,"zhanghongchang$","yan",3);//张洪昌
 	zhanghongchang->addSkill(new Shoucang);
@@ -5578,9 +5584,7 @@ TongyuanPackage::TongyuanPackage()
 	zhanghongchang->addSkill(new XuanjiangDraw);
 	related_skills.insertMulti("xuanjiang","#xuanjiang");
 
-	General *wangxianglin = new General(this,"wangxianglin","mo",3,false);//王湘淋
-	wangxianglin->addSkill(new Aixiao);
-	wangxianglin->addSkill(new Chuyi);
+	
 
 	General *yanghao = new General(this,"yanghao","yan",3);//杨浩
 	yanghao->addSkill(new Youxi);
@@ -5659,6 +5663,8 @@ TongyuanPackage::TongyuanPackage()
 	General *jiangjianjun = new General(this,"jiangjianjun","ping");//江建军
 	jiangjianjun->addSkill(new Wenyi);
 
+	General *yaoyunzhi = new General(this,"yaoyunzhi","ping");//姚云志
+	yaoyunzhi->addSkill(new Qianxu);
 	//-------------------老总们-------------------------------
 	General *chenliping = new General(this,"chenliping","god",3);//陈立平
 	chenliping->addSkill(new Yuanjian);
