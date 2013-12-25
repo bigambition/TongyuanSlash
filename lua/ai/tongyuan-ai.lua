@@ -2925,6 +2925,18 @@ function sgs.ai_cardsview.renyi(self, class_name, player)
 end
 
 sgs.ai_card_intention.RenyiCard = sgs.ai_card_intention.Peach
+
+--大笑
+sgs.ai_skill_invoke.daxiao = function(self,data)
+	if not self.player:faceUp() then 
+		return true 
+	else
+		local damage = data:toDamage()
+		local from = damage.from
+		return damage.from~=nil and self:isEnemy(from)
+	end
+	return false
+end
 --和气
 sgs.ai_skill_invoke.heqi = function(self,data)
 	local damage = data:toDamage()

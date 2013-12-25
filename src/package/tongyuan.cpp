@@ -4429,55 +4429,64 @@ class Daxiao: public TriggerSkill{
 public:
 	Daxiao(): TriggerSkill("daxiao"){
 		events<<Damaged;
-		frequency = Frequent;
+		//frequency = Frequent;
 	}
 
 	virtual bool trigger(TriggerEvent triggerEvent, Room *room, ServerPlayer *player, QVariant &data) const{
-		if(player->faceUp()) return false;
-		if(!player->askForSkillInvoke(objectName(),data)) return false;
-		player->turnOver();
-		if(player->isAlive())
-			player->drawCards(1,objectName());
+		if(player->faceUp()){			
+			DamageStruct damage = data.value<DamageStruct>();
+			if(!damage.from) return false;
+			if(damage.to!=player) return false;
+			if(!player->askForSkillInvoke(objectName(),data)) return false;
+			Slash *slash = new Slash(Card::NoSuit,0);
+			slash->setSkillName(objectName());
+			room->useCard(CardUseStruct(slash,player,damage.from,true),false);
+		}else{
+			if(!player->askForSkillInvoke(objectName(),data)) return false;
+			player->turnOver();
+			if(player->isAlive())
+				player->drawCards(1,objectName());
+		}		
 		return false;
 	}
 };
 
 //张峥-和气 
-class Heqi: public TriggerSkill{
-public:
-	Heqi(): TriggerSkill("heqi"){
-		events<<DamageInflicted<<DamageCaused;
-	}
-
-	virtual bool trigger(TriggerEvent triggerEvent, Room *room, ServerPlayer *player, QVariant &data) const{
-		if(triggerEvent == DamageInflicted){
-			DamageStruct damage = data.value<DamageStruct>();
-			if(!damage.from || damage.from == player || player->isKongcheng()) return false;
-			if(!room->askForSkillInvoke(player,objectName(),data)) return false;
-			if(room->askForDiscard(player,objectName(),1,1,false,false,"#heqi")){
-				LogMessage log;
-				log.type = "#HeqiDefend";
-				log.from = damage.from;
-				log.to<<player;
-				log.arg = QString::number(damage.damage);
-				room->sendLog(log);
-				return true;
-			}							
-		}else if(triggerEvent == DamageCaused){
-			DamageStruct damage = data.value<DamageStruct>();
-			if(!damage.to->isAlive() || damage.to == player || !player->askForSkillInvoke(objectName(),data)) return false;
-			player->drawCards(1,objectName());
-			LogMessage log;
-			log.type = "#HeqiDefend";
-			log.from = player;
-			log.to<<damage.to;
-			log.arg = QString::number(damage.damage);
-			room->sendLog(log);
-			return true;
-		}
-		return false;
-	}
-};
+//class Heqi: public TriggerSkill{
+//public:
+//	Heqi(): TriggerSkill("heqi"){
+//		events<<DamageInflicted<<DamageCaused;
+//	}
+//
+//	virtual bool trigger(TriggerEvent triggerEvent, Room *room, ServerPlayer *player, QVariant &data) const{
+//		if(triggerEvent == DamageInflicted){
+//			DamageStruct damage = data.value<DamageStruct>();
+//			if(!damage.from || damage.from == player || player->isKongcheng()) return false;
+//			if(!room->askForSkillInvoke(player,objectName(),data)) return false;
+//			if(room->askForDiscard(player,objectName(),1,1,false,false,"#heqi")){
+//				LogMessage log;
+//				log.type = "#HeqiDefend";
+//				log.from = damage.from;
+//				log.to<<player;
+//				log.arg = QString::number(damage.damage);
+//				room->sendLog(log);
+//				return true;
+//			}							
+//		}else if(triggerEvent == DamageCaused){
+//			DamageStruct damage = data.value<DamageStruct>();
+//			if(!damage.to->isAlive() || damage.to == player || !player->askForSkillInvoke(objectName(),data)) return false;
+//			player->drawCards(1,objectName());
+//			LogMessage log;
+//			log.type = "#HeqiDefend";
+//			log.from = player;
+//			log.to<<damage.to;
+//			log.arg = QString::number(damage.damage);
+//			room->sendLog(log);
+//			return true;
+//		}
+//		return false;
+//	}
+//};
 
 //李明升-雷厉
 class Leili: public TriggerSkill {
@@ -5519,8 +5528,8 @@ TongyuanPackage::TongyuanPackage()
 	liguangmin->addSkill(new Renyi);
 	liguangmin->addSkill(new Daxiao);
 
-	General *zhangzheng = new General(this,"zhangzheng","qun",4);//张峥
-	zhangzheng->addSkill(new Heqi);
+	//General *zhangzheng = new General(this,"zhangzheng","qun",4);//张峥
+	//zhangzheng->addSkill(new Heqi);
 
 	General *limingsheng = new General(this,"limingsheng","qun",3);//李明升
 	limingsheng->addSkill(new Leili);
