@@ -130,8 +130,8 @@ public:
 					room->broadcastSkillInvoke("helpsign",1);
 				else if(p->getGender() == General::Female)
 					room->broadcastSkillInvoke("helpsign",2);
-				//if(room->askForNullification(card,p,damage.to,true)) return false;
-				//room->isCanceled()
+				if(damage.to->hasSkills("noswuyan|luakaoshen|zhongyong|laoshi")&&p!=damage.to) continue;
+				if(p->hasSkills("noswuyan|zhongyong") && p!=damage.to) continue;
 				LogMessage log;
 				log.type = "#dismissdamage";
 				log.from = p;
