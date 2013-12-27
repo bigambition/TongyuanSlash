@@ -2739,12 +2739,15 @@ public:
 
 	virtual bool trigger(TriggerEvent,Room* room,ServerPlayer* hanlu,QVariant& data) const{
 		SlashEffectStruct effect = data.value<SlashEffectStruct>();
-		if(effect.from!=hanlu || !hanlu->isAlive() ||effect.slash->isVirtualCard()) return false;
+		if(effect.from!=hanlu || !hanlu->isAlive()) return false; 
+		if(effect.slash->isVirtualCard() && (effect.slash->getSubcards().length()!=1 ||
+			!(Sanguosha->getCard(effect.slash->getSubcards().first())->isKindOf("Slash")))) return false;			
 		if(hanlu->getPile("bao").length()>=3) return false;
 		if(!hanlu->askForSkillInvoke(objectName(),data)) return false;
-		hanlu->addToPile("bao",effect.slash->getId());
-		if(!effect.jink->isVirtualCard())
-			hanlu->addToPile("bao",effect.jink->getId());
+		hanlu->addToPile("bao",effect.slash);
+		if(effect.jink->isVirtualCard() && (effect.jink->getSubcards().length()!=1 ||
+			!(Sanguosha->getCard(effect.jink->getSubcards().first())->isKindOf("Jink")))) return false;
+		hanlu->addToPile("bao",effect.jink);
 		return false;
 	}
 };
@@ -3139,6 +3142,11 @@ public:
 				caopis << p;
 		}
 		if(caopis.isEmpty() || !player->askForSkillInvoke(objectName(),data)) return false;
+		LogMessage log;
+		log.type = "#helpjink";
+		log.from = player;
+		log.arg = "bangfu";
+		room->sendLog(log);
 		QVariant tohelp = QVariant::fromValue((PlayerStar)player);
 		room->setTag("tohelp",tohelp);
 		foreach(ServerPlayer* p,caopis){			

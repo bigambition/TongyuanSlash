@@ -126,7 +126,10 @@ public:
 			if(card){
 				card->setCancelable(false);
 				room->useCard(CardUseStruct(card,p,damage.to));
-				room->broadcastSkillInvoke("helpsign");
+				if(p->getGender() == General::Male)
+					room->broadcastSkillInvoke("helpsign",1);
+				else if(p->getGender() == General::Female)
+					room->broadcastSkillInvoke("helpsign",2);
 				//if(room->askForNullification(card,p,damage.to,true)) return false;
 				//room->isCanceled()
 				LogMessage log;
