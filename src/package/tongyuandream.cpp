@@ -106,7 +106,7 @@ void Dios::takeEffect(ServerPlayer *target) const{
 
 class DismissDamage: public TriggerSkill{
 public:
-	DismissDamage(): TriggerSkill("#dismissdamage"){
+	DismissDamage(): TriggerSkill("dismissdamage"){
 		events<< DamageInflicted;
 		global = true;
 	}
@@ -119,17 +119,20 @@ public:
 		DamageStruct damage = data.value<DamageStruct>();
 		//QString pattern = new  ExpPattern("Peach");
 		foreach(ServerPlayer* p,room->getAllPlayers()){
+			/*const Card* card1 = room->askForCard(p,"helpsign","@helpsign:"+damage.to->objectName(),data,
+			Card::MethodNone,NULL,false,QString(),false);*/
 			const Card* card1 = room->askForCard(p,"helpsign","@helpsign:"+damage.to->objectName(),data,
-				Card::MethodNone,NULL,false,QString(),false);
+				Card::MethodUse,damage.to,false,QString(),false);
+			//const Card* card1 = room->askForUseCard(p,"helpsign","@helpsign:"+damage.to->objectName());
 			Card* card2 = const_cast<Card*>(card1);
 			TrickCard* card = qobject_cast<TrickCard*>(card2);
 			if(card){
 				card->setCancelable(false);
-				room->useCard(CardUseStruct(card,p,damage.to));
+				//room->useCard(CardUseStruct(card,p,damage.to));
 				if(p->getGender() == General::Male)
-					room->broadcastSkillInvoke("helpsign",1);
+					room->broadcastSkillInvoke(objectName(), 1);
 				else if(p->getGender() == General::Female)
-					room->broadcastSkillInvoke("helpsign",2);
+					room->broadcastSkillInvoke(objectName(), 2);
 				if(damage.to->hasSkills("noswuyan|luakaoshen|zhongyong|laoshi")&&p!=damage.to) continue;
 				if(p->hasSkills("noswuyan|zhongyong") && p!=damage.to) continue;
 				LogMessage log;
